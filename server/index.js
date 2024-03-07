@@ -1,10 +1,11 @@
 const express = require("express");
-const { client, createTable, createProduct, createUser, fetchUsers, fetchProducts, createFavorite } = require("./db");
+const { client, createTable, createProduct, createUser, fetchUsers, fetchProducts, createFavorite, fetchFavorites } =
+	require("./db");
 const app = express();
 
 // GET /api/users - returns array of users ✅
 // GET /api/products - returns an array of products ✅
-// GET /api/users/:id/favorites - returns an array of favorites for a user
+// GET /api/users/:id/favorites - returns an array of favorites for a user ✅
 // POST /api/users/:id/favorites - payload: a product_id
 // - returns the created favorite with a status code of 201
 // DELETE /api/users/:userId/favorites/:id - deletes a favorite for a user, returns nothing with a status code of 204
@@ -20,6 +21,11 @@ app.get("/api/users", async (req, res, next) =>
 app.get("/api/products", async (req, res, next) =>
 {
 	res.send(await fetchProducts());
+});
+
+app.get("/api/users/:id/favorites", async (req, res, next) =>
+{
+	res.send(await fetchFavorites(req.params.id));
 });
 
 const init = async () =>

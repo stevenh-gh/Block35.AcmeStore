@@ -9,7 +9,7 @@ const client = new pg.Client(process.env.DATABASE_URL || "postgres://localhost/a
 // createUser - creates a user in the database and returns the created record. The password of the user should be hashed using bcrypt. ✅
 // fetchUsers - returns an array of users in the database ✅
 // fetchProducts - returns an array of products in the database ✅
-// fetchFavorites - returns an array favorites for a user
+// fetchFavorites - returns an array favorites for a user ✅
 // createFavorite - creates a favorite in the database and returns the created record ✅
 // destroyFavorite - deletes a favorite in the database
 
@@ -98,6 +98,16 @@ async function createFavorite(userId, productId)
 	return response.rows[0];
 }
 
+async function fetchFavorites(userId)
+{
+	let sql = `
+		select * from favorite
+		where user_id = $1;
+	`;
+	const response = await client.query(sql, [userId]);
+	return response.rows;
+}
+
 module.exports = {
 	client,
 	createTable,
@@ -106,4 +116,5 @@ module.exports = {
 	fetchUsers,
 	fetchProducts,
 	createFavorite,
+	fetchFavorites,
 };
