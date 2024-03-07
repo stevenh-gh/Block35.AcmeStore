@@ -1,10 +1,12 @@
+const uuid = require("uuid");
+const bcrypt = require("bcrypt");
 const pg = require("pg");
 const client = new pg.Client(process.env.DATABASE_URL || "postgres://localhost/acme_store");
 
 // client - a node pg client ✅
-// createTables method - drops and creates the tables for your application
-// createProduct - creates a product in the database and returns the created record
-// createUser - creates a user in the database and returns the created record. The password of the user should be hashed using bcrypt.
+// createTables method - drops and creates the tables for your application ✅
+// createProduct - creates a product in the database and returns the created record ✅
+// createUser - creates a user in the database and returns the created record. The password of the user should be hashed using bcrypt. ✅
 // fetchUsers - returns an array of users in the database
 // fetchProducts - returns an array of products in the database
 // fetchFavorites - returns an array favorites for a user
@@ -39,7 +41,35 @@ async function createTable()
 	await client.query(sql);
 }
 
+async function createProduct(name)
+{
+	let sql = `
+		insert into product
+			(id, name)
+		values
+			($1, $2)
+		returning *;
+	`;
+	const response = await client.query(sql, [uuid.v4(), name]);
+	return response.rows[0];
+}
+
+async function createUser(username, password)
+{
+	let sql = `
+		insert into "user"
+			(id, username, password)
+		values
+			($1, $2, $3)
+		returning *;
+	`;
+	const response = await client.query(sql, [uuid.v4(), username, await bcrypt.hash(password, 5)]);
+	return response.rows[0];
+}
+
 module.exports = {
 	client,
 	createTable,
+	createProduct,
+	createUser,
 };

@@ -1,5 +1,5 @@
 const express = require("express");
-const { client, createTable } = require("./db");
+const { client, createTable, createProduct, createUser } = require("./db");
 const app = express();
 
 // GET /api/users - returns array of users
@@ -18,6 +18,11 @@ const init = async () =>
 	console.log("creating table");
 	await createTable();
 	console.log("created table");
+
+	console.log("seeding db");
+	console.log(await createProduct("testname"));
+	console.log(await createUser("steven", "mypassword"));
+	console.log("seeded db");
 
 	const PORT = 3000;
 	app.listen(PORT, () =>
