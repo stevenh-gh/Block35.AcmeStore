@@ -7,7 +7,7 @@ const client = new pg.Client(process.env.DATABASE_URL || "postgres://localhost/a
 // createTables method - drops and creates the tables for your application ✅
 // createProduct - creates a product in the database and returns the created record ✅
 // createUser - creates a user in the database and returns the created record. The password of the user should be hashed using bcrypt. ✅
-// fetchUsers - returns an array of users in the database
+// fetchUsers - returns an array of users in the database ✅
 // fetchProducts - returns an array of products in the database
 // fetchFavorites - returns an array favorites for a user
 // createFavorite - creates a favorite in the database and returns the created record
@@ -67,9 +67,19 @@ async function createUser(username, password)
 	return response.rows[0];
 }
 
+async function fetchUsers()
+{
+	let sql = `
+		select * from "user";
+	`;
+	const response = await client.query(sql);
+	return response.rows;
+}
+
 module.exports = {
 	client,
 	createTable,
 	createProduct,
 	createUser,
+	fetchUsers,
 };
