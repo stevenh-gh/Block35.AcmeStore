@@ -11,7 +11,7 @@ const client = new pg.Client(process.env.DATABASE_URL || "postgres://localhost/a
 // fetchProducts - returns an array of products in the database ✅
 // fetchFavorites - returns an array favorites for a user ✅
 // createFavorite - creates a favorite in the database and returns the created record ✅
-// destroyFavorite - deletes a favorite in the database
+// destroyFavorite - deletes a favorite in the database ✅
 
 async function createTable()
 {
@@ -108,6 +108,15 @@ async function fetchFavorites(userId)
 	return response.rows;
 }
 
+async function destroyFavorite(id)
+{
+	let sql = `
+		delete from favorite
+		where id = $1;
+	`;
+	await client.query(sql, [id]);
+}
+
 module.exports = {
 	client,
 	createTable,
@@ -117,4 +126,5 @@ module.exports = {
 	fetchProducts,
 	createFavorite,
 	fetchFavorites,
+	destroyFavorite,
 };
